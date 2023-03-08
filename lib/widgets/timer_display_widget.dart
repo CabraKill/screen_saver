@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class TimerDisplayWidget extends StatefulWidget {
@@ -8,26 +10,38 @@ class TimerDisplayWidget extends StatefulWidget {
 }
 
 class _TimerDisplayWidgetState extends State<TimerDisplayWidget> {
-  //stream for timer
-  final _timerStream =
-      Stream<DateTime>.periodic(const Duration(seconds: 1), (x) {
-    return DateTime.now();
-  });
+  final _streamController = StreamController<DateTime>.broadcast();
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeTimer();
+  }
+
+  void _initializeTimer() {
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      _onTimerCallback,
+    );
+  }
 
   @override
   void dispose() {
-    _timerStream.drain();
+    _timer?.cancel();
+    _streamController.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _timerStream,
+      stream: _streamController.stream,
       builder: (context, snapshot) {
         DateTime time = DateTime.now();
+        String timeFormatted = _getTimeFormatted(time);
         return Text(
-          '${time.hour}:${time.minute}:${time.second}',
+          timeFormatted,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 60,
@@ -35,5 +49,19 @@ class _TimerDisplayWidgetState extends State<TimerDisplayWidget> {
         );
       },
     );
+  }
+
+  void _onTimerCallback(Timer _) {
+    _streamController.sink.add(DateTime.now());
+    setState(() {});
+  }
+
+  //TODO call it from time converter utils and add test for it
+  String _getTimeFormatted(DateTime time) {
+    var hour = time.hour.toString().padLeft(2, "0");
+    var minute = time.minute.toString().padLeft(2, "0");
+    var second = time.second.toString().padLeft(2, "0");
+    var timeFormatted = '$hour:$minute:$second';
+    return timeFormatted;
   }
 }

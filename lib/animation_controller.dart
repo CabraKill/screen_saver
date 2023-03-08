@@ -63,7 +63,6 @@ class FlareAnimationController extends FlareControls {
       _isFlying = false;
       _decelerate();
     }
-    // _artboard?.
   }
 
   double? get _progressNormalized {
