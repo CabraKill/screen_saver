@@ -1,3 +1,5 @@
+![Web build](https://github.com/CabraKill/screen_saver/actions/workflows/flutter-build-deploy.yml/badge.svg)
+
 # screen_saver
 
 A new Flutter project.

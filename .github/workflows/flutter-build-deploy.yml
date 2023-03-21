@@ -37,7 +37,7 @@ jobs:
         run: flutter pub get
 
       - name: Build web
-        run: flutter build web --base-href "/cat_mouse_tracker/"
+        run: flutter build web --base-href "/screen_saver/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
