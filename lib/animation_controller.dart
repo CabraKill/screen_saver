@@ -1,28 +1,44 @@
 import 'dart:async';
+import 'package:rive/rive.dart';
 
-import 'package:flare_flutter/flare.dart';
-import 'package:flare_flutter/flare_controls.dart';
-
-class FlareAnimationController extends FlareControls {
-  static const _progressBarNodeName = "progress-bar-controll";
-
-  FlutterActorArtboard? _artboard;
+class RocketAnimationController {
+  Artboard? _artboard;
   double? _progress;
   bool _isFlying = false;
   bool _pillarsOn = false;
   Timer? _sendPackageTimer;
+  late StateMachineController _riveAnimationController;
+
+  bool get isActive => _riveAnimationController.isActive;
+  set isActive(bool value) => _riveAnimationController.isActive = value;
+
+  RocketAnimationController(Artboard artboard) {
+    _artboard = artboard;
+    _initializeSendPackageTimer();
+    //TODO update name
+    _riveAnimationController =
+        StateMachineController.fromArtboard(artboard, 'State Machine 1')
+            as StateMachineController;
+    artboard.addController(_riveAnimationController);
+    _riveAnimationController.isActive = false;
+  }
+
+  void start(double batteryLevel) async {
+    _riveAnimationController.isActive = true;
+    _progress = batteryLevel;
+    _controlProgressBar(batteryLevel);
+  }
+
+  void _controlProgressBar(double progressFactor) {
+    final batteryInput =
+        _riveAnimationController.findInput<double>('batteryInput') as SMINumber;
+    batteryInput.change(progressFactor * 100);
+  }
 
   void _onSendPackageTimerCallback(Timer _) {
     if (!_isFlying) {
       playPackageAnimation();
     }
-  }
-
-  @override
-  void initialize(FlutterActorArtboard artboard) {
-    super.initialize(artboard);
-    _artboard = artboard;
-    _initializeSendPackageTimer();
   }
 
   void _initializeSendPackageTimer() {
@@ -38,20 +54,21 @@ class FlareAnimationController extends FlareControls {
 
   void playIdle() {
     _progress = null;
-    play("idle");
+    // play("idle");
   }
 
   void playPackageAnimation() {
-    play("package");
+    // play("package");
   }
 
   void playFillUpAnimation() {
-    _progress = null;
-    play("fillUp");
+    // _progress = null;
+    // play("fillUp");
   }
 
   void updateProgress(double progress) {
     _progress = progress;
+    _controlProgressBar(progress);
     if (_progress == 1) {
       _isFlying = true;
       playAcceleration();
@@ -70,70 +87,49 @@ class FlareAnimationController extends FlareControls {
     if (progress == null) {
       return null;
     }
-    final node = _artboard?.getNode(_progressBarNodeName);
-    if (node == null) {
-      return null;
-    }
 
     return 297 - ((297 - (-180)) * progress).abs();
   }
 
   void playRotationWithStartTime(String name, double startTime) {
-    // play(name);
-    _artboard?.animations;
-    final animation = _artboard?.getAnimation(name);
-    // _artboard?.getAnimation(name).
-    animation?.apply(5, _artboard!, 1);
-    isActive.value = true;
+    // _artboard?.animations;
+    // final animation = _artboard?.getAnimation(name);
+    // animation?.apply(5, _artboard!, 1);
+    // isActive.value = true;
   }
 
-  void playRotationWithStartTime_old(String name, double startTime) {
-    _artboard?.advance(5);
-    // return;
-    // final artboard = _artboard?.actor.artboard;
-    // if (artboard == null) {
-    //   return;
-    // }
-    // artboard.initializeGraphics();
-    // var flutterArtboard = artboard.makeInstance() as FlutterActorArtboard;
-    // flutterArtboard.initializeGraphics();
-    // flutterArtboard.advance(5);
-    // _artboard = flutterArtboard;
-    // // return flutterArtboard;
-  }
-
-  @override
-  bool advance(FlutterActorArtboard artboard, double elapsed) {
-    var progressNormalized = _progressNormalized;
-    if (progressNormalized != null) {
-      _artboard?.getNode(_progressBarNodeName)?.y = progressNormalized;
-    }
-    return super.advance(artboard, elapsed);
-  }
+  // @override
+  // bool advance(FlutterActorArtboard artboard, double elapsed) {
+  //   var progressNormalized = _progressNormalized;
+  //   if (progressNormalized != null) {
+  //     _artboard?.getNode(_progressBarNodeName)?.y = progressNormalized;
+  //   }
+  //   return super.advance(artboard, elapsed);
+  // }
 
   void playAcceleration() {
-    play("acceleration");
-    Future.delayed(const Duration(seconds: 2)).then((value) => playFlying());
+    // play("acceleration");
+    // Future.delayed(const Duration(seconds: 2)).then((value) => playFlying());
   }
 
   void playFlying() {
-    play("flying");
+    // play("flying");
   }
 
   void _decelerate() {
-    _playDeceleration();
-    Future.delayed(const Duration(seconds: 2)).then((value) => playIdle());
+    // _playDeceleration();
+    // Future.delayed(const Duration(seconds: 2)).then((value) => playIdle());
   }
 
   void _play50PercentOfProgressAnimation() async {
-    _pillarsOn = true;
-    play("pillars");
+    // _pillarsOn = true;
+    // play("pillars");
 
-    await Future.delayed(const Duration(milliseconds: 1011));
-    play("pillarsFlying");
+    // await Future.delayed(const Duration(milliseconds: 1011));
+    // play("pillarsFlying");
   }
 
   void _playDeceleration() {
-    play("deceleration");
+    // play("deceleration");
   }
 }
