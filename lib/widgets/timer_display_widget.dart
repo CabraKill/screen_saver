@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TimerDisplayWidget extends StatefulWidget {
   const TimerDisplayWidget({super.key});
@@ -40,13 +41,14 @@ class _TimerDisplayWidgetState extends State<TimerDisplayWidget> {
       builder: (context, snapshot) {
         DateTime time = DateTime.now();
         String timeFormatted = _getTimeFormatted(time);
-        return Text(
-          timeFormatted,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 60,
-          ),
-        );
+        return Text(timeFormatted,
+            style: GoogleFonts.pacifico(
+              textStyle: const TextStyle(
+                // color: Color(0xFF1EAF00),
+                color: Colors.white,
+                fontSize: 72,
+              ),
+            ));
       },
     );
   }

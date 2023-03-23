@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
-import 'package:screen_saver/presentation/pages/home_page_controller.dart';
+import 'package:screen_saver/presentation/pages/rocket/home_page_controller.dart';
 import 'package:screen_saver/widgets/progress_widget.dart';
 import 'package:screen_saver/widgets/timer_display_widget.dart';
 
